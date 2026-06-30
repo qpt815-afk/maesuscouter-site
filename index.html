@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HAVA · 매수스카우터</title>
+<meta name="description" content="HAVA가 만드는 주식 종목 점수화 서비스, 매수스카우터. 객관적 지표를 점수로 환산해 한눈에 보여줍니다.">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --navy: #0f1f3d;
+    --navy2: #14264a;
+    --accent: #16c79a;
+    --accent-dark: #0fa07b;
+    --ink: #1a2233;
+    --muted: #5b6678;
+    --line: #e6eaf0;
+    --bg: #f7f9fc;
+  }
+  body {
+    font-family: -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+    color: var(--ink);
+    background: #fff;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+
+  /* Header */
+  header {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: saturate(180%) blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 20px; color: var(--navy); letter-spacing: -0.5px; }
+  .brand .dot { width: 28px; height: 28px; border-radius: 8px; background: linear-gradient(135deg, var(--accent), var(--navy)); display:inline-block; }
+  .nav a.cta { background: var(--navy); color: #fff; padding: 9px 16px; border-radius: 10px; text-decoration: none; font-size: 14px; font-weight: 600; }
+
+  /* Hero */
+  .hero { background: linear-gradient(160deg, var(--navy) 0%, var(--navy2) 60%, #0b1830 100%); color: #fff; padding: 84px 0 96px; position: relative; overflow: hidden; }
+  .hero .wrap { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 40px; align-items: center; }
+  .eyebrow { color: var(--accent); font-weight: 700; font-size: 14px; letter-spacing: 1px; text-transform: uppercase; }
+  .hero h1 { font-size: 44px; line-height: 1.2; letter-spacing: -1px; margin: 14px 0 18px; font-weight: 800; }
+  .hero p { color: #c7d2e3; font-size: 18px; max-width: 520px; }
+  .hero .actions { margin-top: 28px; display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn { padding: 13px 22px; border-radius: 12px; font-weight: 700; text-decoration: none; font-size: 15px; display: inline-block; }
+  .btn-primary { background: var(--accent); color: #06281f; }
+  .btn-ghost { background: rgba(255,255,255,0.08); color: #fff; border: 1px solid rgba(255,255,255,0.18); }
+
+  /* Score badge */
+  .score-card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 20px; padding: 28px; text-align: center; }
+  .gauge { width: 160px; height: 160px; margin: 0 auto 14px; border-radius: 50%;
+    background: conic-gradient(var(--accent) 0% 82%, rgba(255,255,255,0.12) 82% 100%);
+    display: flex; align-items: center; justify-content: center; position: relative; }
+  .gauge::before { content:""; position:absolute; inset:14px; border-radius:50%; background:#102140; }
+  .gauge .val { position: relative; z-index:1; font-size: 40px; font-weight: 800; color:#fff; }
+  .gauge .val small { font-size: 16px; color: var(--accent); }
+  .score-card .tag { display:inline-block; margin-top:6px; background: rgba(22,199,154,0.15); color: var(--accent); padding: 5px 12px; border-radius: 999px; font-size: 13px; font-weight: 700; }
+  .score-card .name { color:#c7d2e3; font-size: 14px; margin-top: 10px; }
+
+  /* Sections */
+  section.block { padding: 80px 0; }
+  .section-head { text-align: center; max-width: 640px; margin: 0 auto 48px; }
+  .section-head h2 { font-size: 32px; letter-spacing: -0.8px; color: var(--navy); }
+  .section-head p { color: var(--muted); margin-top: 12px; font-size: 17px; }
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .card { background: var(--bg); border: 1px solid var(--line); border-radius: 16px; padding: 28px; }
+  .card .ic { width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); margin-bottom: 16px; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:800; font-size:20px; }
+  .card h3 { font-size: 18px; color: var(--ink); margin-bottom: 8px; }
+  .card p { color: var(--muted); font-size: 15px; }
+
+  /* Disclaimer */
+  .disclaimer { background: #fff8ed; border: 1px solid #f5e2c0; border-radius: 16px; padding: 22px 26px; color: #8a6418; font-size: 14.5px; }
+  .disclaimer strong { color: #6b4d10; }
+
+  /* Company */
+  .company { background: var(--bg); }
+  .company .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 720px; margin: 0 auto; }
+  .info-row { background:#fff; border:1px solid var(--line); border-radius: 12px; padding: 18px 22px; }
+  .info-row .k { font-size: 13px; color: var(--muted); font-weight: 600; }
+  .info-row .v { font-size: 16px; color: var(--ink); font-weight: 700; margin-top: 4px; }
+
+  /* Footer */
+  footer { background: var(--navy); color: #9fb0c9; padding: 40px 0; font-size: 14px; }
+  footer .wrap { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+  footer a { color: #c7d2e3; text-decoration: none; }
+  footer a:hover { color:#fff; }
+
+  @media (max-width: 760px) {
+    .hero .wrap { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 34px; }
+    .cards { grid-template-columns: 1fr; }
+    .company .grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <div class="brand"><span class="dot"></span> HAVA</div>
+    <a class="cta" href="#company">문의하기</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">주식 종목 점수화 서비스</div>
+      <h1>감이 아니라<br>점수로 판단하세요</h1>
+      <p>매수스카우터는 여러 객관적 지표를 하나의 점수로 환산해, 종목을 한눈에 비교할 수 있게 도와주는 분석 도구입니다.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="#app">서비스 알아보기</a>
+        <a class="btn btn-ghost" href="#company">회사 정보</a>
+      </div>
+    </div>
+    <div class="score-card">
+      <div class="gauge"><span class="val">82<small>점</small></span></div>
+      <span class="tag">투자 검토 가능</span>
+      <div class="name">예시 종목 · 종합 점수</div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="app">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>매수스카우터는 이렇게 작동합니다</h2>
+      <p>복잡한 지표를 매번 따져볼 필요 없이, 점수 하나로 종목의 현재 상태를 빠르게 파악하세요.</p>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <div class="ic">①</div>
+        <h3>지표를 점수로</h3>
+        <p>여러 항목을 유형별로 배점·정규화해 0~100점의 종합 점수로 환산합니다.</p>
+      </div>
+      <div class="card">
+        <div class="ic">②</div>
+        <h3>한눈에 비교</h3>
+        <p>기준선(예: 60점)을 중심으로 종목 간 상대적 위치를 직관적으로 비교할 수 있습니다.</p>
+      </div>
+      <div class="card">
+        <div class="ic">③</div>
+        <h3>객관적 기준</h3>
+        <p>일관된 산식으로 계산해, 그날의 분위기가 아닌 정량 데이터에 근거한 판단을 돕습니다.</p>
+      </div>
+    </div>
+    <div style="margin-top:40px;">
+      <div class="disclaimer">
+        <strong>투자 유의 안내.</strong> 매수스카우터가 제공하는 점수와 정보는 참고용 분석 자료이며, 특정 종목의 매수·매도를 권유하지 않습니다. 모든 투자 판단과 그 결과에 대한 책임은 이용자 본인에게 있습니다.
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block company" id="company">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>회사 정보</h2>
+      <p>매수스카우터는 HAVA가 개발·운영합니다.</p>
+    </div>
+    <div class="grid">
+      <div class="info-row"><div class="k">상호</div><div class="v">HAVA</div></div>
+      <div class="info-row"><div class="k">서비스</div><div class="v">매수스카우터 (Android)</div></div>
+      <div class="info-row"><div class="k">이메일</div><div class="v">qpt815@gmail.com</div></div>
+      <div class="info-row"><div class="k">문의</div><div class="v">앱·제휴 문의 환영</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 HAVA. All rights reserved.</div>
+    <div><a href="privacy.html">개인정보처리방침</a></div>
+  </div>
+</footer>
+
+</body>
+</html>
