@@ -1,0 +1,19 @@
+{
+  "_comment": "짧은 링크 → Play 스토어(설치 리퍼러 UTM) 리다이렉트 정의. `node tools/gen-links.mjs` 로 각 폴더의 index.html 을 다시 만든다. 채널 추가 = 여기에 한 줄 + 재생성.",
+  "package": "com.havacompany.maesuscouter",
+  "webapp": "https://qpt815-afk.github.io/stock-scores/",
+  "supabase_url": "https://xwyrwxnqvbgjcxqvujvs.supabase.co",
+  "supabase_key": "sb_publishable_Z53o09xGVPaOlAVoeyNWPg_kOR26Xg3",
+  "links": {
+    "yt":   { "source": "youtube",       "medium": "shorts",   "campaign": "shorts_daily",  "label": "유튜브 쇼츠(영상 안 URL · 설명란)" },
+    "ytc":  { "source": "youtube",       "medium": "channel",  "campaign": "profile_link",  "label": "유튜브 채널 프로필 링크" },
+    "ytl":  { "source": "youtube",       "medium": "longform", "campaign": "howto",         "label": "유튜브 롱폼(사용법·주간) 설명란" },
+    "blog": { "source": "naver_blog",    "medium": "post",     "campaign": "brief",         "label": "네이버 블로그 본문·공지·위젯" },
+    "ts":   { "source": "tistory",       "medium": "post",     "campaign": "brief",         "label": "티스토리" },
+    "th":   { "source": "threads",       "medium": "post",     "campaign": "daily",         "label": "스레드" },
+    "x":    { "source": "x",             "medium": "post",     "campaign": "daily",         "label": "X(트위터)" },
+    "cm":   { "source": "community",     "medium": "post",     "campaign": "intro",         "label": "커뮤니티(디시·클리앙·긱뉴스 등)" },
+    "web":  { "source": "webapp",        "medium": "banner",   "campaign": "get_app",       "label": "웹앱 안의 '앱으로 알림 받기' 버튼" },
+    "app":  { "source": "maesuscouter_kr", "medium": "link",   "campaign": "generic",       "label": "그 밖의 모든 곳(기본)" }
+  }
+}

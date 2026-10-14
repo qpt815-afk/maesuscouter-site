@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="origin">
+<title>매수 스카우터 — 앱으로 이동 중</title>
+<meta name="description" content="코스피·미국주식 매수 타이밍 점수 앱 '매수 스카우터'(무료)로 이동합니다.">
+<style>
+  html,body{margin:0;height:100%;background:#0b0d11;color:#e6e9ef;font-family:-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif}
+  .wrap{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center}
+  .logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#16c79a,#0f1f3d)}
+  h1{font-size:18px;margin:6px 0 0;font-weight:700}
+  p{margin:0;color:#9aa3b2;font-size:14px;line-height:1.5}
+  a.btn{display:inline-block;margin-top:8px;padding:12px 20px;border-radius:12px;background:#16c79a;color:#06281f;font-weight:700;text-decoration:none}
+  a.alt{color:#9aa3b2;font-size:13px;text-decoration:underline}
+</style>
+</head><body>
+<div class="wrap">
+  <div class="logo" aria-hidden="true"></div>
+  <h1>매수 스카우터 앱으로 이동 중…</h1>
+  <p>코스피·미국주식 매수 타이밍을 0~100 점수로.<br>회원가입 없이 전 기능 무료.</p>
+  <a class="btn" id="go" href="https://play.google.com/store/apps/details?id=com.havacompany.maesuscouter&referrer=utm_source%3Dtistory%26utm_medium%3Dpost%26utm_campaign%3Dbrief" rel="noopener">Google Play에서 받기</a>
+  <a class="alt" href="https://qpt815-afk.github.io/stock-scores/?utm_source=tistory&utm_medium=post&utm_campaign=brief" rel="noopener">앱 설치 없이 웹에서 보기</a>
+</div>
+<script>
+(function () {
+  var CH = "ts";
+  var PLAY = "https://play.google.com/store/apps/details?id=com.havacompany.maesuscouter&referrer=utm_source%3Dtistory%26utm_medium%3Dpost%26utm_campaign%3Dbrief";
+  var WEB = "https://qpt815-afk.github.io/stock-scores/?utm_source=tistory&utm_medium=post&utm_campaign=brief";
+  var ua = navigator.userAgent || "";
+  var platform = /android/i.test(ua) ? "android" : /iphone|ipad|ipod/i.test(ua) ? "ios" : "other";
+  var dest = platform === "ios" ? WEB : PLAY;       // iOS 앱은 아직 없음 → 웹앱
+  try { document.getElementById("go").href = dest; } catch (e) {}
+  try {
+    var ref = "";
+    try { ref = (document.referrer || "").slice(0, 120); } catch (e) {}
+    fetch("https://xwyrwxnqvbgjcxqvujvs.supabase.co" + "/rest/v1/ms_event", {
+      method: "POST", keepalive: true,
+      headers: { "apikey": "sb_publishable_Z53o09xGVPaOlAVoeyNWPg_kOR26Xg3", "Content-Type": "application/json", "Prefer": "return=minimal" },
+      body: JSON.stringify({ event: "link_click", channel: CH, platform: platform, meta: { ref: ref, lang: (navigator.language || "").slice(0, 8) } })
+    }).catch(function () {});
+  } catch (e) {}
+  setTimeout(function () { location.replace(dest); }, 150);
+})();
+</script>
+</body></html>
